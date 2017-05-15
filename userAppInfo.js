@@ -50,26 +50,34 @@ app.post('/search', (request, response) => {
 
 
 		for (var i = 0; i < users.length; i++) {
+
 			if (input === users[i].firstname) {
 
 				var firstname = users[i].firstname;
 				var lastname = users[i].lastname;
 				var email = users[i].email;
-			}else if(input === users[i].lastname){
+			} else if(input === users[i].lastname){
 
 				var firstname = users[i].firstname;
 				var lastname = users[i].lastname;
 				var email = users[i].email;
 
+			} else if (input === users[i].firstname + " " + users[i].lastname) {
+
+				var firstname = users[i].firstname;
+				var lastname = users[i].lastname;
+				var email = users[i].email;
 			}
-		}
-		response.render('findUsers', {
+
+		};
+
+			response.render('findUsers', {
 			first: firstname,
 			last: lastname,
 			email: email
 		});
-	});
-});	
+	});	
+});
 
 
 // Part 2
