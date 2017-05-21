@@ -1,9 +1,44 @@
 html
+
 	head
+		script(src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js")
+		style
+			include user.css
+
+		title Search
 
 	body
-		form(action='', method='POST')
-			P Search for name:
-			input(type="text", name="name")
-			p
+
+		form(action='searchUsers', method='POST', autocomplete="off")
+
+			p Search for name:
+
+			input#searchUser(type="text", name="name", placeholder="Enter the name")
+			br
+			input(class='' id='suggestion')
+
+			p 
+
 			input(type="submit", value="Search")
+		script.
+			$(document).ready(function(){
+				$('#searchUser').keyup(function(){
+				//console.log('someText');
+				//console.log($(this).val());
+					var searchField = $('#searchUser').val();
+					//var myExp = new RegExp(searchField, "i");
+					$.post('/searchUsers', {input: searchField}, function(data){
+					console.log("test:" + data);
+						$('#suggestion').val(data);
+
+
+					//alert('success')
+					//if((val.name.search(myExp) != -1){
+
+					});
+
+				});
+			});
+	 
+		
+
