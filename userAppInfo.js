@@ -42,48 +42,58 @@ app.get('/searchUsers', (request, response) => {
 
 app.post('/searchUsers', (request, response) => {
 	fs.readFile('./users.json', 'utf-8', function(err, data){
-		if (err) {
-			throw err;
-		}
+		// if (err) {
+		// 	throw err;
+		// }
 
-		//var input = request.body.name;
-		var typed = request.body.input;
+		var data = JSON.parse(data);
 
-		
-		var users = JSON.parse(data);
-		
-
-		
-
-
-		for (var i = 0; i < users.length; i++) {
-
-			if (input === users[i].firstname) {
-
-				var firstname = users[i].firstname;
-				var lastname = users[i].lastname;
-				var email = users[i].email;
-			} else if(input === users[i].lastname){
-
-				var firstname = users[i].firstname;
-				var lastname = users[i].lastname;
-				var email = users[i].email;
-
-			} else if (input === users[i].firstname + " " + users[i].lastname) {
-
-				var firstname = users[i].firstname;
-				var lastname = users[i].lastname;
-				var email = users[i].email;
-			}
-
+		data = data.map(function(user){
+			return {
+			firstname: user.firstname,
+			lastname: user.lastname
 		};
-
-			response.render('findUsers', {
-			first: firstname,
-			last: lastname,
-			email: email
-		});
 			
+		});
+		console.log(data);
+		
+		response.send(data);
+
+
+		
+		// var input = request.body.name;
+
+
+		// for (var i = 0; i < users.length; i++) {
+
+		// 	if (input === users[i].firstname) {
+
+		// 		var firstname = users[i].firstname;
+		// 		var lastname = users[i].lastname;
+		// 		var email = users[i].email;
+		// 	} else if(input === users[i].lastname){
+
+		// 		var firstname = users[i].firstname;
+		// 		var lastname = users[i].lastname;
+		// 		var email = users[i].email;
+
+		// 	} else if (input === users[i].firstname + " " + users[i].lastname) {
+
+		// 		var firstname = users[i].firstname;
+		// 		var lastname = users[i].lastname;
+		// 		var email = users[i].email;
+		// 	}
+
+		// };
+
+
+
+		// 	response.render('findUsers', {
+		// 	first: firstname,
+		// 	last: lastname,
+		// 	email: email
+		// });
+
      });
 
  });

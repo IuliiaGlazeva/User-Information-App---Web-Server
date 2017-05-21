@@ -13,7 +13,7 @@ html
 
 			p Search for name:
 
-			input#searchUser(type="text", name="name", placeholder="Enter the name")
+			input#searchBar(type="text", name="name", placeholder="Enter the name")
 			br
 			input(class='' id='suggestion')
 
@@ -22,14 +22,16 @@ html
 			input(type="submit", value="Search")
 		script.
 			$(document).ready(function(){
-				$('#searchUser').keyup(function(){
+				$('#searchBar').keyup(function(){
 				//console.log('someText');
 				//console.log($(this).val());
-					var searchField = $('#searchUser').val();
+					//var searchField = $('#searchBar').val();
 					//var myExp = new RegExp(searchField, "i");
-					$.post('/searchUsers', {input: searchField}, function(data){
-					console.log("test:" + data);
-						$('#suggestion').val(data);
+					$.post('/searchUsers', {input: $('#searchBar').val() }, function(results){
+						console.log(results);
+						$('#suggestion').append(JSON.stringify(results));
+					
+						//$('#suggestion').val(data);
 
 
 					//alert('success')
