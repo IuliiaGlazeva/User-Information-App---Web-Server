@@ -11,9 +11,24 @@ app.set('view engine', 'pug');
 app.use(bodyParser.urlencoded (
 	{extended: true}));
 
-app.get('/', (req, res) => {
-	res.render('usersInfo');
+// Part 0
+// Create one route:
+// - route 1: renders a page that displays all your users.
 
+app.get('/', (request, response) => {
+	fs.readFile('./users.json', 'utf-8', function(err,data){
+		if(err){
+			throw err;
+		}
+
+
+		var parseData = JSON.parse(data);
+		
+		response.render("usersInfo", {
+			users: parseData
+		});
+		
+	});
 });
 
 app.get('/searchUsers', (req, res) =>{
@@ -23,13 +38,22 @@ app.get('/searchUsers', (req, res) =>{
 
 
 app.post('/searchUsers', (req, res) => {
-	res.render('searchUsers');
-});
+	fs.readFile('./users.json', 'utf-8', function(err, data){
+		if (err){
+			throw err;
+		}
 
+	})
+});
 
 app.post('/autocomplete', (req, res) =>{
 		var input = req.body.input;
-		
+		findUser(input,function(results){
+			res.send(results);
+
+		});
+	});
+function findUser(input, onComplete){
 	fs.readFile('users.json', function(err, userdata){
 		userdata = JSON.parse(userdata);
 		// search function:
@@ -42,7 +66,7 @@ app.post('/autocomplete', (req, res) =>{
 			};
 			
 		});
-		console.log(userdata);
+		//!console.log(userdata);
 
 		var results = [];
 		
@@ -53,12 +77,13 @@ app.post('/autocomplete', (req, res) =>{
 
 		});
 
-		res.send(results);
+		onComplete(results);
 
 
 	})
 	
-});
+
+}
 
 app.listen(3000, function(){
 	console.log('UserInfoApp listening on port 3000!')

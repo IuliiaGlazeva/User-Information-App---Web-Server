@@ -5,17 +5,25 @@ html
 		script.
 			$(document).ready(function(){
 				$('#searchBar').keyup(function(){
-					$.post('/autocomplete', {input: $(this).val()}, function(results){
-						
-						$('#suggestion').empty();
-						$('#suggestion').append(JSON.stringify(results));
+					var input = $(this).val();
+					$.post('/autocomplete', {input: input}, function(results){
+						if(results.length !== 0){
+							console.log("test: " + results[0].firstname 	)
+							document.getElementById("option1").setAttribute("value", "klaas")
+						}
+						//- if(results.length === 2) {
+						//- 	//fehlt noch etwas
+						//- }
 					});
 				});
 			});
 	body
-		p 
-		form(action="/searchUsers" method="post")
-			input(type="text" id="searchBar")
+		p
+		form(action="/searchUsers" method="post" autocomplete="off")
+			input(list="searchuser", name="input", id="searchBar" value="Search")
+			datalist#searchuser
+				option(value="" id='option1')
+				option(value="" id='option2')//- fehlt noche eine Option
 			input(type="submit" value="search")
-			br
-			div(id="suggestion")
+			
+			
