@@ -8,22 +8,26 @@ html
 					var input = $(this).val();
 					$.post('/autocomplete', {input: input}, function(results){
 						if(results.length !== 0){
-							console.log("test: " + results[0].firstname 	)
-							document.getElementById("option1").setAttribute("value", "klaas")
+							document.getElementById("searchuser1").setAttribute("value", results[0].firstname + " " + results[0].lastname)
 						}
-						//- if(results.length === 2) {
-						//- 	//fehlt noch etwas
-						//- }
+						if(results.length >= 2) {
+							document.getElementById("searchuser2").setAttribute("value", results[1].firstname + " " + results[1].lastname)
+						}
+						if(results.length >= 3){
+							document.getElementById("searchuser3").setAttribute("value", results[2].firstname + " " + results[2].lastname)
+						}
+
 					});
 				});
 			});
 	body
 		p
 		form(action="/searchUsers" method="post" autocomplete="off")
-			input(list="searchuser", name="input", id="searchBar" value="Search")
+			input(list="searchuser", name="input", id="searchBar" placeholder="Search")
 			datalist#searchuser
-				option(value="" id='option1')
-				option(value="" id='option2')//- fehlt noche eine Option
+				option(value="" id='searchuser1')
+				option(value="" id='searchuser2')
+				option(value="" id='searchuser3')
 			input(type="submit" value="search")
 			
 			

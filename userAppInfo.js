@@ -36,16 +36,6 @@ app.get('/searchUsers', (req, res) =>{
 });
 
 
-
-app.post('/searchUsers', (req, res) => {
-	fs.readFile('./users.json', 'utf-8', function(err, data){
-		if (err){
-			throw err;
-		}
-
-	})
-});
-
 app.post('/autocomplete', (req, res) =>{
 		var input = req.body.input;
 		findUser(input,function(results){
