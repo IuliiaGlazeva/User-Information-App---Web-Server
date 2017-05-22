@@ -1,46 +1,21 @@
+doctype html
 html
-
 	head
 		script(src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js")
-		style
-			include user.css
-
-		title Search
-
-	body
-
-		form(action='searchUsers', method='POST', autocomplete="off")
-
-			p Search for name:
-
-			input#searchBar(type="text", name="name", placeholder="Enter the name")
-			br
-			input(class='' id='suggestion')
-
-			p 
-
-			input(type="submit", value="Search")
 		script.
 			$(document).ready(function(){
 				$('#searchBar').keyup(function(){
-				//console.log('someText');
-				//console.log($(this).val());
-					//var searchField = $('#searchBar').val();
-					//var myExp = new RegExp(searchField, "i");
-					$.post('/searchUsers', {input: $('#searchBar').val() }, function(results){
-						console.log(results);
+					$.post('/autocomplete', {input: $(this).val()}, function(results){
+						
+						$('#suggestion').empty();
 						$('#suggestion').append(JSON.stringify(results));
-					
-						//$('#suggestion').val(data);
-
-
-					//alert('success')
-					//if((val.name.search(myExp) != -1){
-
 					});
-
 				});
 			});
-	 
-		
-
+	body
+		p 
+		form(action="/searchUsers" method="post")
+			input(type="text" id="searchBar")
+			input(type="submit" value="search")
+			br
+			div(id="suggestion")
