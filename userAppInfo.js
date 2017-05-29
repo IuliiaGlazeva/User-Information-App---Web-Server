@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 	fs.readFile('./users.json', 'utf-8', function(err,data){
 
 		var parseData = JSON.parse(data);
-		response.render("usersInfo", {
+		res.render("usersInfo", {
 			users: parseData
 		});
 	});
@@ -30,16 +30,16 @@ app.get('/', (req, res) => {
 // - renders a page that displays a form which is your search bar.
 // - takes in the post request from your form, then displays matching users on a new page. Users should be matched based on whether either their first or last name contains the input string.
 
-app.get('/search', (request, response) => {
-	response.render('searchUsers')
+app.get('/search', (req, res) => {
+	res.render('searchUsers')
 })
 
 
 
-app.post("/search", (request, response) => {
+app.post("/search", (req, res) => {
 	fs.readFile('./users.json', 'utf-8', function(err, data){
 	
-		var input = request.body.input;
+		var input = req.body.input;
 		var users = JSON.parse(data);
 	
 
@@ -65,7 +65,7 @@ app.post("/search", (request, response) => {
 
 			};
 
-		response.render('findUsers', {
+		res.render('findUsers', {
 			first: firstname,
 			last: lastname,
 			email: email
@@ -121,34 +121,34 @@ function findUser(input, onComplete){
 
 
 app.get('/register', (req, res) => {
-	response.render('form');
+	res.render('form');
 });
 
 //- takes in the post request from the 'create user' form, then adds the user to the users.json file. Once that is complete, redirects to the route that displays all your users (from part 0).
 
 app.post('/register', (req, res) => {
-	console.log(request.body);
+	console.log(req.body);
 
 	fs.readFile('./users.json', 'utf-8', function(err,data){
 		
 		parseData = JSON.parse(data);
 		
-		firstname = request.body.firstname;
-	    lastname = request.body.lastname;
-	    email = request.body.email;
+		firstname = req.body.firstname;
+	    lastname = req.body.lastname;
+	    email = req.body.email;
 
 
 	    newUser = {
-	        firstname: request.body.firstname,
-	        lastname: request.body.lastname,
-	        email: request.body.email
+	        firstname: req.body.firstname,
+	        lastname: req.body.lastname,
+	        email: req.body.email
 
    		};
 
         parseData.push(newUser)
 
         fs.writeFile('./users.json', JSON.stringify(parseData));
-        response.redirect('/')
+        res.redirect('/')
 	  
     });
 });
