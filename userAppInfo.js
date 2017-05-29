@@ -10,119 +10,148 @@ app.use(bodyParser.urlencoded({
 app.set('views', 'Views');
 app.set('view engine', 'pug');
 
-// Part 0
+// 
 // Create one route:
-// - route 1: renders a page that displays all your users.
+// - renders a page that displays all your users.
 
-app.get('/', (request, response) => {
+app.get('/', (req, res) => {
 	fs.readFile('./users.json', 'utf-8', function(err,data){
-		if(err){
-			throw err;
-		}
-
 
 		var parseData = JSON.parse(data);
-		
-		response.render("usersInfo", {
+		res.render("usersInfo", {
 			users: parseData
 		});
 	});
 });
 
 
-// Part 1
+ 
 // Create two more routes:
-// - route 2: renders a page that displays a form which is your search bar.
-// - route 3: takes in the post request from your form, then displays matching users on a new page. Users should be matched based on whether either their first or last name contains the input string.
+// - renders a page that displays a form which is your search bar.
+// - takes in the post request from your form, then displays matching users on a new page. Users should be matched based on whether either their first or last name contains the input string.
 
-app.get('/search', (request, response) => {
-	response.render('searchUsers')
+app.get('/search', (req, res) => {
+	res.render('searchUsers')
 })
 
-app.post('/search', (request, response) => {
+
+
+app.post("/search", (req, res) => {
 	fs.readFile('./users.json', 'utf-8', function(err, data){
-		if (err) {
-			throw err;
-		}
-
-		var input = request.body.name;
+	
+		var input = req.body.input;
 		var users = JSON.parse(data);
+	
 
+			for (var i = 0; i < users.length; i++) {
 
-		for (var i = 0; i < users.length; i++) {
+				if (input === users[i].firstname) {
 
-			if (input === users[i].firstname) {
+					var firstname = users[i].firstname;
+					var lastname = users[i].lastname;
+					var email = users[i].email;
+				} else if(input === users[i].lastname){
 
-				var firstname = users[i].firstname;
-				var lastname = users[i].lastname;
-				var email = users[i].email;
-			} else if(input === users[i].lastname){
+					var firstname = users[i].firstname;
+					var lastname = users[i].lastname;
+					var email = users[i].email;
 
-				var firstname = users[i].firstname;
-				var lastname = users[i].lastname;
-				var email = users[i].email;
+				} else if (input === users[i].firstname + " " + users[i].lastname) {
 
-			} else if (input === users[i].firstname + " " + users[i].lastname) {
+					var firstname = users[i].firstname;
+					var lastname = users[i].lastname;
+					var email = users[i].email;
+				}
 
-				var firstname = users[i].firstname;
-				var lastname = users[i].lastname;
-				var email = users[i].email;
-			}
+			};
 
-		};
-
-			response.render('findUsers', {
+		res.render('findUsers', {
 			first: firstname,
 			last: lastname,
 			email: email
 		});
+			
+	});
+});	
+
+//Autocomplete Modify your form so that every time the user enters a key, 
+//it makes an AJAX call that populates the search results. Do this work in a git 
+//branch called "autocomplete". Then, merge this branch into master with a pull request.
+
+
+
+app.post('/autocomplete', (req, res) => {
+		var input = req.body.input;
+		findUser(input,function(results){
+			res.send(results);
+
+		});
+	});
+
+function findUser(input, onComplete){
+	fs.readFile('users.json', function(err, userdata){
+
+		userdata = JSON.parse(userdata);
+		
+		userdata = userdata.map(function(user){
+			return{
+				firstname: user.firstname,
+				lastname: user.lastname
+
+			};	
+		});
+
+		var results = [];
+		
+		userdata.forEach(function(user){
+			if (user.firstname.startsWith(input) || user.lastname.startsWith(input)) {
+				results.push(user);
+			};
+		});
+
+		onComplete(results);
+
 	});	
-});
+};
 
 
-// Part 2
+
 // Create two more routes:
-// - route 4: renders a page with three forms on it (first name, last name, and email) that allows you to add new users to the users.json file.
+// - renders a page with three forms on it (first name, last name, and email) that allows you to add new users to the users.json file.
 
 
-app.get('/register', (request, response) => {
-	response.render('form');
+app.get('/register', (req, res) => {
+	res.render('form');
 });
 
-//- route 5: takes in the post request from the 'create user' form, then adds the user to the users.json file. Once that is complete, redirects to the route that displays all your users (from part 0).
+//- takes in the post request from the 'create user' form, then adds the user to the users.json file. Once that is complete, redirects to the route that displays all your users (from part 0).
 
-app.post('/register', (request, response) => {
-	console.log(request.body);
+app.post('/register', (req, res) => {
+	console.log(req.body);
 
 	fs.readFile('./users.json', 'utf-8', function(err,data){
-		if(err){
-			throw err;
-		}
-
+		
 		parseData = JSON.parse(data);
 		
-
-        
-		firstname = request.body.firstname;
-	    lastname = request.body.lastname;
-	    email = request.body.email;
-
+		firstname = req.body.firstname;
+	    lastname = req.body.lastname;
+	    email = req.body.email;
 
 
 	    newUser = {
-	        firstname: request.body.firstname,
-	        lastname: request.body.lastname,
-	        email: request.body.email
+	        firstname: req.body.firstname,
+	        lastname: req.body.lastname,
+	        email: req.body.email
 
-    };
+   		};
 
         parseData.push(newUser)
 
         fs.writeFile('./users.json', JSON.stringify(parseData));
-        response.redirect('/')
+        res.redirect('/')
 	  
-      });
-   });
+    });
+});
 
 
 
