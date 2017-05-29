@@ -4,20 +4,26 @@ html
 		script(src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js")
 		script.
 			$(document).ready(function(){
+				var timeMs = Date.now();
+				var requestTime = 0;
 				$('#searchBar').keyup(function(){
 					var input = $(this).val();
-					$.post('/autocomplete', {input: input}, function(results){
-						if(results.length !== 0){
-							document.getElementById("searchuser1").setAttribute("value", results[0].firstname + " " + results[0].lastname)
-						}
-						if(results.length >= 2) {
-							document.getElementById("searchuser2").setAttribute("value", results[1].firstname + " " + results[1].lastname)
-						}
-						if(results.length >= 3){
-							document.getElementById("searchuser3").setAttribute("value", results[2].firstname + " " + results[2].lastname)
-						}
-
-					});
+					if(Date.now() - requestTime > 300) {
+						requestTime = Date.now();
+						$.post('/autocomplete', {input: input}, function(results){
+							if(results.length !== 0){
+								document.getElementById("searchuser1").setAttribute("value", results[0].firstname + " " + results[0].lastname)
+							}
+							if(results.length >= 2) {
+								document.getElementById("searchuser2").setAttribute("value", results[1].firstname + " " + results[1].lastname)
+							}
+							if(results.length >= 3){
+								document.getElementById("searchuser3").setAttribute("value", results[2].firstname + " " + results[2].lastname)
+							}
+						});
+					} else {
+						console.log("test");
+					}
 				});
 			});
 	body
